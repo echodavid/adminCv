@@ -17,7 +17,6 @@ export class AdminCertificatesComponent implements OnInit {
   ngOnInit(): void {
     this.certificatesService.getCertificates().subscribe(data => {
       this.certificatesList = data;
-      console.log('Certificados actualizados:', this.certificatesList);
     });
   }
 
