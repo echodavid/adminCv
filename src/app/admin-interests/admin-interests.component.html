@@ -1,0 +1,17 @@
+<div class="container">
+  <h2>Manage Interests</h2>
+  
+  <!-- Formulario para agregar intereses -->
+  <div>
+    <input type="text" [(ngModel)]="newInterest.interest" placeholder="Enter an interest" />
+    <button (click)="addInterest()">Add Interest</button>
+  </div>
+
+  <!-- Lista de intereses -->
+  <ul>
+    <li *ngFor="let interest of interests">
+      {{ interest.interest }}
+      <button (click)="deleteInterest(interest.id)">Delete</button>
+    </li>
+  </ul>
+</div>

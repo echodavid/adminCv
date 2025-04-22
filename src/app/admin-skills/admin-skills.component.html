@@ -1,0 +1,18 @@
+<div class="container">
+  <h2>Manage Skills</h2>
+  
+  <!-- Formulario para agregar habilidades -->
+  <div>
+    <input type="text" [(ngModel)]="newSkill.skill" placeholder="Enter a skill" />
+    <input type="number" [(ngModel)]="newSkill.level" placeholder="Enter skill level (1-10)" />
+    <button (click)="addSkill()">Add Skill</button>
+  </div>
+
+  <!-- Lista de habilidades -->
+  <ul>
+    <li *ngFor="let skill of skills">
+      {{ skill.skill }} (Level: {{ skill.level }})
+      <button (click)="deleteSkill(skill.id)">Delete</button>
+    </li>
+  </ul>
+</div>

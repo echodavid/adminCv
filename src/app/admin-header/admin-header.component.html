@@ -1,0 +1,15 @@
+<div class="container">
+  <h2>Edit Header</h2>
+  
+  <!-- Form to edit the header -->
+  <div>
+    <input type="text" [(ngModel)]="header.name" placeholder="Name" />
+    <input type="text" [(ngModel)]="header.goallife" placeholder="Goal in Life" />
+    <input type="text" [(ngModel)]="header.photoUrl" placeholder="Photo URL" />
+    <input type="email" [(ngModel)]="header.email" placeholder="Email" />
+    <input type="text" [(ngModel)]="header.phoneNumber" placeholder="Phone Number" />
+    <input type="text" [(ngModel)]="header.location" placeholder="Location" />
+    <input type="text" [(ngModel)]="header.socialNetwork" placeholder="Social Network" />
+    <button (click)="updateHeader()">Update Header</button>
+  </div>
+</div>
