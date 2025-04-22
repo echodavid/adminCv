@@ -1,37 +1,61 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore, AngularFirestoreCollection } from "@angular/fire/compat/firestore";
+import {
+  Firestore,
+  collection,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getFirestore,
+} from "@angular/fire/firestore";
+import { initializeApp } from "@angular/fire/app";
+import { BehaviorSubject, Observable } from "rxjs";
 import { Header } from "../../models/header/header.model";
-
+import { environment } from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root',
 })
 export class HeaderService {
   private dbPath = '/header';
+  private firestore = getFirestore(
+    initializeApp(environment.firebase)
+  );
+  private headerSubject: BehaviorSubject<Header[]> = new BehaviorSubject<Header[]>([]);
 
-  headerRef: AngularFirestoreCollection<Header>;
-
-  accesoHeader = 'header service running...';
-
-  constructor(private db: AngularFirestore) {
-    this.headerRef = db.collection(this.dbPath);
+  constructor() {
+    this.listenToHeader();
   }
 
-  getHeader(): AngularFirestoreCollection<Header> {
-    return this.headerRef;
+  private listenToHeader(): void {
+    const collectionRef = collection(this.firestore, this.dbPath);
+    onSnapshot(collectionRef, (snapshot) => {
+      const headers = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Header));
+      this.headerSubject.next(headers);
+    });
   }
-  createHeader(header: Header): any {
-    return this.headerRef.add({ ...header });
-  }
-  updateHeader(id: string, data: Header): Promise<void> {
-    console.log("Updating header: ", data);
-    console.log("Updating header id: ", id);
-    console.log("Updating header data: ", this.headerRef);
 
-    console.log("Updating header ref: ", this.headerRef.doc(id));
-    return this.headerRef.doc(id).update(data);
+  getHeader(): Observable<Header[]> {
+    return this.headerSubject.asObservable();
   }
-  deleteHeader(id: string): Promise<void> {
-    return this.headerRef.doc(id).delete();
+
+  async createHeader(header: Header): Promise<void> {
+    delete header.id;
+    const collectionRef = collection(this.firestore, this.dbPath);
+    await addDoc(collectionRef, { ...header });
+  }
+
+  async updateHeader(id: string, data: Header): Promise<void> {
+    const docRef = doc(this.firestore, `${this.dbPath}/${id}`);
+    await updateDoc(docRef, { ...data });
+  }
+
+  async deleteHeader(id: string): Promise<void> {
+    const docRef = doc(this.firestore, `${this.dbPath}/${id}`);
+    await deleteDoc(docRef);
   }
 }

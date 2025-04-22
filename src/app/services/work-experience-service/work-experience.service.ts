@@ -1,34 +1,61 @@
 import { Injectable } from "@angular/core";
+import {
+  Firestore,
+  collection,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getFirestore,
+} from "@angular/fire/firestore";
+import { initializeApp } from "@angular/fire/app";
+import { BehaviorSubject, Observable } from "rxjs";
 import { WorkExperience } from "../../models/work-experience/workExperience.model";
-import { AngularFirestore, AngularFirestoreCollection } from "@angular/fire/compat/firestore";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
-export class WorkExperienceService{
-
+export class WorkExperienceService {
   private dbPath = '/work-experience';
+  private firestore = getFirestore(
+    initializeApp(environment.firebase)
+  );
+  private workExperienceSubject: BehaviorSubject<WorkExperience[]> = new BehaviorSubject<WorkExperience[]>([]);
 
-  workExperienceRef: AngularFirestoreCollection<WorkExperience>;
-
-  accesoWorkExperience = "work esperience service running...";
-  constructor(private db: AngularFirestore){
-    this.workExperienceRef = db.collection(this.dbPath);
+  constructor() {
+    this.listenToWorkExperience();
   }
 
-  getWorkExperience(): AngularFirestoreCollection<WorkExperience> {
-    return this.workExperienceRef;
+  private listenToWorkExperience(): void {
+    const collectionRef = collection(this.firestore, this.dbPath);
+    onSnapshot(collectionRef, (snapshot) => {
+      const workExperienceList = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as WorkExperience));
+      this.workExperienceSubject.next(workExperienceList);
+    });
   }
-  createWorkExperience(workExperience: WorkExperience): any {
-    delete(workExperience.id)
-    console.log("Creating work experience: ", workExperience);
-    return this.workExperienceRef.add({ ...workExperience });
+
+  getWorkExperience(): Observable<WorkExperience[]> {
+    return this.workExperienceSubject.asObservable();
   }
-  updateWorkExperience(id: string, data: WorkExperience): Promise<void> {
-    return this.workExperienceRef.doc(id).update(data);
+
+  async createWorkExperience(workExperience: WorkExperience): Promise<void> {
+    delete workExperience.id;
+    const collectionRef = collection(this.firestore, this.dbPath);
+    await addDoc(collectionRef, { ...workExperience });
   }
-  deleteWorkExperience(id: string): Promise<void> {
-    return this.workExperienceRef.doc(id).delete();
+
+  async updateWorkExperience(id: string, data: WorkExperience): Promise<void> {
+    const docRef = doc(this.firestore, `${this.dbPath}/${id}`);
+    await updateDoc(docRef, { ...data });
+  }
+
+  async deleteWorkExperience(id: string): Promise<void> {
+    const docRef = doc(this.firestore, `${this.dbPath}/${id}`);
+    await deleteDoc(docRef);
   }
 }

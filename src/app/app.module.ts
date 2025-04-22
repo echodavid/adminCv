@@ -17,6 +17,7 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from '../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { LanguagesService } from './services/languages-service/languages.service';
+import { Firestore } from '@angular/fire/firestore';
 
 @NgModule({
   declarations: [
@@ -34,11 +35,11 @@ import { LanguagesService } from './services/languages-service/languages.service
     AppRoutingModule,
     CommonModule,
     FormsModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule
+    AngularFireModule.initializeApp(environment.firebase)
   ],
   providers: [
-    LanguagesService
+    LanguagesService,
+
 
   ],
   bootstrap: [AppComponent]

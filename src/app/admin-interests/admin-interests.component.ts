@@ -1,35 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Interest } from '../models/interest/interset.model';
 import { InterestsService } from '../services/interests-service/interests.service';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-interests',
   standalone: false,
   templateUrl: './admin-interests.component.html',
-  styleUrl: './admin-interests.component.css'
+  styleUrls: ['./admin-interests.component.css']
 })
-export class AdminInterestsComponent {
-  interests: Interest[] = []; // Lista de intereses
-  newInterest: Interest = { interest: '' }; // Nuevo interés a agregar
+export class AdminInterestsComponent implements OnInit {
+  interests: Interest[] = [];
+  newInterest: Interest = { interest: '' };
 
-  constructor(private interestsService: InterestsService) {
-    // Cargar intereses desde el servicio
-    this.interestsService.getInterests().snapshotChanges().pipe(
-      map((changes: any[]) =>
-        changes.map(c => ({ id: c.payload.doc.id, ...c.payload.doc.data() }))
-      )
-    ).subscribe(data => {
-      this.interests = data as Interest[];
+  constructor(private interestsService: InterestsService) {}
+
+  ngOnInit(): void {
+    this.interestsService.getInterests().subscribe(data => {
+      this.interests = data;
     });
   }
 
-  // Método para agregar un interés
   addInterest() {
     if (this.newInterest.interest?.trim()) {
       this.interestsService.createInterests(this.newInterest).then(() => {
-        console.log('Interés agregado exitosamente');
-        this.newInterest = { interest: '' }; // Limpiar el formulario
+        this.newInterest = { interest: '' };
       }).catch((error: any) => {
         console.error('Error al agregar el interés:', error);
       });
@@ -38,7 +32,6 @@ export class AdminInterestsComponent {
     }
   }
 
-  // Método para eliminar un interés
   deleteInterest(id: string | undefined) {
     if (!id) {
       console.error('ID del interés no definido');

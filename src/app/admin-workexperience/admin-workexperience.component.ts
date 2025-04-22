@@ -1,43 +1,35 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { WorkExperience } from '../models/work-experience/workExperience.model';
 import { WorkExperienceService } from '../services/work-experience-service/work-experience.service';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-admin-workexperience',
   standalone: false,
   templateUrl: './admin-workexperience.component.html',
-  styleUrl: './admin-workexperience.component.css'
+  styleUrls: ['./admin-workexperience.component.css']
 })
-export class AdminWorkexperienceComponent {
-
+export class AdminWorkexperienceComponent implements OnInit {
   itemCount: number = 0;
-  btntxt: string = "Add Work Experience";
-  goalText: string = "";
-  workExperience: WorkExperience[] = []
-  newWorkExperience: WorkExperience = new WorkExperience()
+  workExperience: WorkExperience[] = [];
+  newWorkExperience: WorkExperience = new WorkExperience();
 
-  constructor(public workExperienceService: WorkExperienceService){
-    console.log("asd" ,this.workExperienceService);
-    this.workExperienceService.getWorkExperience().snapshotChanges().pipe(
-      map((changes: any[]) => 
-        changes.map(c => ({ id: c.payload.doc.id, ...c.payload.doc.data() }))
-      )
-    ).subscribe(data => {
-      this.workExperience = data as WorkExperience[];
+  constructor(public workExperienceService: WorkExperienceService) {}
+
+  ngOnInit(): void {
+    this.workExperienceService.getWorkExperience().subscribe(data => {
+      this.workExperience = data;
       this.itemCount = this.workExperience.length;
-      console.log("Work Experience: ", this.workExperience);
-    })
+    });
   }
 
   addWorkExperience() {
     this.workExperienceService.createWorkExperience(this.newWorkExperience).then(() => {
-      console.log("Work Experience added successfully!");
       this.newWorkExperience = new WorkExperience();
     }).catch((error: any) => {
       console.error("Error adding Work Experience: ", error);
     });
   }
+
   deleteWorkExperience(id: string) {
     this.workExperienceService.deleteWorkExperience(id).then(() => {
       console.log("Work Experience deleted successfully!");
@@ -45,6 +37,4 @@ export class AdminWorkexperienceComponent {
       console.error("Error deleting Work Experience: ", error);
     });
   }
-
-
 }

@@ -1,34 +1,61 @@
-import { Injectable } from "@angular/core";
-import { Language } from "../../models/languages/language.model";
-import { AngularFirestore, AngularFirestoreCollection } from "@angular/fire/compat/firestore";
+import { Injectable } from '@angular/core';
+import {
+  Firestore,
+  collection,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getFirestore,
+} from '@angular/fire/firestore';
+import { initializeApp } from '@angular/fire/app';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Language } from '../../models/languages/language.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LanguagesService {
   private dbPath = '/language';
+  private firestore = getFirestore(
+    initializeApp(environment.firebase)
+  );
+  private languagesSubject: BehaviorSubject<Language[]> = new BehaviorSubject<Language[]>([]);
 
-  languagesRef: AngularFirestoreCollection<Language>;
+  constructor() {
+    this.listenToLanguages();
+  }
 
-  accesoLanguages = 'languages services running...';
-  constructor(private db: AngularFirestore) {
-    this.languagesRef = db.collection(this.dbPath);
-    this.languagesRef.doc("NjAg0kUL0cv6GmpbKlAf").delete();
+  private listenToLanguages(): void {
+    const collectionRef = collection(this.firestore, this.dbPath);
+    onSnapshot(collectionRef, (snapshot) => {
+      const languages = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Language));
+      this.languagesSubject.next(languages);
+    });
   }
-  getLanguages(): AngularFirestoreCollection<Language> {
-    return this.languagesRef;
+
+  getLanguages(): Observable<Language[]> {
+    return this.languagesSubject.asObservable();
   }
-  createLanguages(languages: Language): any {
-    return this.languagesRef.add({ ...languages });
+
+  async createLanguages(language: Language): Promise<void> {
+    delete language.id;
+    const collectionRef = collection(this.firestore, this.dbPath);
+    await addDoc(collectionRef, { ...language });
   }
-  updateLanguages(id: string, data: Language): Promise<void> {
-    return this.languagesRef.doc(id).update(data);
+
+  async updateLanguages(id: string, data: Language): Promise<void> {
+    const docRef = doc(this.firestore, `${this.dbPath}/${id}`);
+    await updateDoc(docRef, { ...data });
   }
-  deleteLanguages(id: string): Promise<void> {
-    console.log("deleting id", id);
-    console.log("ref", this.languagesRef);
-    console.log("deleting laguage", this.languagesRef.doc(id));
-    return this.languagesRef.doc(id).delete();
+
+  async deleteLanguages(id: string): Promise<void> {
+    const docRef = doc(this.firestore, `${this.dbPath}/${id}`);
+    await deleteDoc(docRef);
   }
-  
 }

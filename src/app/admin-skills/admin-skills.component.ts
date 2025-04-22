@@ -1,35 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Skills } from '../models/skills/skills.model';
 import { SkillsService } from '../services/skills-service/skills.service';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-skills',
   standalone: false,
   templateUrl: './admin-skills.component.html',
-  styleUrl: './admin-skills.component.css'
+  styleUrls: ['./admin-skills.component.css']
 })
-export class AdminSkillsComponent {
-  skills: Skills[] = []; // Lista de habilidades
-  newSkill: Skills = { skill: '', level: 0 }; // Nueva habilidad a agregar
+export class AdminSkillsComponent implements OnInit {
+  skills: Skills[] = [];
+  newSkill: Skills = { skill: '', level: 0 };
 
-  constructor(private skillsService: SkillsService) {
-    // Cargar habilidades desde el servicio
-    this.skillsService.getSkills().snapshotChanges().pipe(
-      map((changes: any[]) =>
-        changes.map(c => ({ id: c.payload.doc.id, ...c.payload.doc.data() }))
-      )
-    ).subscribe(data => {
-      this.skills = data as Skills[];
+  constructor(private skillsService: SkillsService) {}
+
+  ngOnInit(): void {
+    this.skillsService.getSkills().subscribe(data => {
+      this.skills = data;
     });
   }
 
-  // Método para agregar una habilidad
   addSkill() {
     if (this.newSkill.skill?.trim() && this.newSkill.level !== undefined) {
       this.skillsService.createSkills(this.newSkill).then(() => {
-        console.log('Habilidad agregada exitosamente');
-        this.newSkill = { skill: '', level: 0 }; // Limpiar el formulario
+        this.newSkill = { skill: '', level: 0 };
       }).catch((error: any) => {
         console.error('Error al agregar la habilidad:', error);
       });
@@ -38,7 +32,6 @@ export class AdminSkillsComponent {
     }
   }
 
-  // Método para eliminar una habilidad
   deleteSkill(id: string | undefined) {
     if (!id) {
       console.error('ID de la habilidad no definido');

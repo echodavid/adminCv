@@ -1,35 +1,50 @@
-import { Injectable } from "@angular/core";
-import { Certificates } from "../../models/certificates/certificates.model";
+import { Injectable } from '@angular/core';
 import {
-  AngularFirestore,
-  AngularFirestoreCollection,
-} from '@angular/fire/compat/firestore';
+  Firestore,
+  collection,
+  onSnapshot,
+  getFirestore,
+  addDoc,
+  deleteDoc,
+  doc,
+} from '@angular/fire/firestore';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Certificates } from '../../models/certificates/certificates.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class CertificatesService{
+export class CertificatesService {
+  private firestore: Firestore;
+  private certificatesSubject: BehaviorSubject<Certificates[]> = new BehaviorSubject<Certificates[]>([]);
 
-  private dbPath = '/certificates';
-
-  certificatesRef: AngularFirestoreCollection<Certificates>;
-
-  accesoCertificates = "certificates service running...";
-
-  constructor(private db: AngularFirestore) {
-    this.certificatesRef = db.collection(this.dbPath);
+  constructor() {
+    this.firestore = getFirestore();
+    this.listenToCertificates();
   }
 
-  getCertificates(): AngularFirestoreCollection<Certificates> {
-    return this.certificatesRef;
+  private listenToCertificates(): void {
+    const collectionRef = collection(this.firestore, '/certificates');
+    onSnapshot(collectionRef, (snapshot) => {
+      const certificates = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Certificates));
+      this.certificatesSubject.next(certificates);
+    });
   }
-  createCertificates(certificates: Certificates): any {
-    return this.certificatesRef.add({ ...certificates });
+
+  getCertificates(): Observable<Certificates[]> {
+    return this.certificatesSubject.asObservable();
   }
-  updateCertificates(id: string, data: Certificates): Promise<void> {
-    return this.certificatesRef.doc(id).update(data);
+
+  async createCertificates(certificate: Certificates): Promise<void> {
+    const collectionRef = collection(this.firestore, '/certificates');
+    await addDoc(collectionRef, { ...certificate });
   }
-  deleteCertificates(id: string): Promise<void> {
-    return this.certificatesRef.doc(id).delete();
+
+  async deleteCertificates(id: string): Promise<void> {
+    const docRef = doc(this.firestore, `/certificates/${id}`);
+    await deleteDoc(docRef);
   }
 }

@@ -1,31 +1,61 @@
 import { Injectable } from "@angular/core";
+import {
+  Firestore,
+  collection,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getFirestore,
+} from "@angular/fire/firestore";
+import { initializeApp } from "@angular/fire/app";
+import { BehaviorSubject, Observable } from "rxjs";
 import { Skills } from "../../models/skills/skills.model";
-import { AngularFirestore, AngularFirestoreCollection } from "@angular/fire/compat/firestore";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
-export class SkillsService{
-
+export class SkillsService {
   private dbPath = '/skills';
+  private firestore = getFirestore(
+    initializeApp(environment.firebase)
+  );
+  private skillsSubject: BehaviorSubject<Skills[]> = new BehaviorSubject<Skills[]>([]);
 
-  skillsRef: AngularFirestoreCollection<Skills>;
+  constructor() {
+    this.listenToSkills();
+  }
 
-  accesoSkills = "skills service running...";
-  constructor(private db: AngularFirestore){
-    this.skillsRef = db.collection(this.dbPath);
+  private listenToSkills(): void {
+    const collectionRef = collection(this.firestore, this.dbPath);
+    onSnapshot(collectionRef, (snapshot) => {
+      const skills = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Skills));
+      this.skillsSubject.next(skills);
+    });
   }
-  getSkills(): AngularFirestoreCollection<Skills> {
-    return this.skillsRef;
+
+  getSkills(): Observable<Skills[]> {
+    return this.skillsSubject.asObservable();
   }
-  createSkills(skills: Skills): any {
-    return this.skillsRef.add({ ...skills });
+
+  async createSkills(skills: Skills): Promise<void> {
+    delete skills.id;
+    const collectionRef = collection(this.firestore, this.dbPath);
+    await addDoc(collectionRef, { ...skills });
   }
-  updateSkills(id: string, data: Skills): Promise<void> {
-    return this.skillsRef.doc(id).update(data);
+
+  async updateSkills(id: string, data: Skills): Promise<void> {
+    const docRef = doc(this.firestore, `${this.dbPath}/${id}`);
+    await updateDoc(docRef, { ...data });
   }
-  deleteSkills(id: string): Promise<void> {
-    return this.skillsRef.doc(id).delete();
+
+  async deleteSkills(id: string): Promise<void> {
+    const docRef = doc(this.firestore, `${this.dbPath}/${id}`);
+    await deleteDoc(docRef);
   }
 }

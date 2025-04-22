@@ -1,36 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Education } from '../models/education/education.model';
 import { EducationService } from '../services/education-service/education.service';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-education',
   standalone: false,
   templateUrl: './admin-education.component.html',
-  styleUrl: './admin-education.component.css'
+  styleUrls: ['./admin-education.component.css']
 })
-export class AdminEducationComponent {
-  educationList: Education[] = []; // Lista de registros educativos
-  newEducation: Education = { degree: '', institution: '', startDate: '', endDate: '' }; // Nuevo registro educativo
+export class AdminEducationComponent implements OnInit {
+  educationList: Education[] = [];
+  newEducation: Education = { degree: '', institution: '', startDate: '', endDate: '' };
 
-  constructor(private educationService: EducationService) {
-    // Cargar registros educativos desde el servicio
-    this.educationService.getEducation().snapshotChanges().pipe(
-      map((changes: any[]) =>
-        changes.map(c => ({ id: c.payload.doc.id, ...c.payload.doc.data() }))
-      )
-    ).subscribe(data => {
-      this.educationList = data as Education[];
+  constructor(private educationService: EducationService) {}
+
+  ngOnInit(): void {
+    this.educationService.getEducation().subscribe(data => {
+      this.educationList = data;
     });
   }
 
-  // Método para agregar un registro educativo
   addEducation() {
     if (this.newEducation.degree?.trim() && this.newEducation.institution?.trim()) {
       this.educationService.createEducation(this.newEducation).then(() => {
-        console.log('Registro educativo agregado exitosamente');
-        this.newEducation = { degree: '', institution: '', startDate: '', endDate: '' }; // Limpiar el formulario
-      }).catch((error:any) => {
+        this.newEducation = { degree: '', institution: '', startDate: '', endDate: '' };
+      }).catch((error: any) => {
         console.error('Error al agregar el registro educativo:', error);
       });
     } else {
@@ -38,7 +32,6 @@ export class AdminEducationComponent {
     }
   }
 
-  // Método para eliminar un registro educativo
   deleteEducation(id: string | undefined) {
     if (!id) {
       console.error('ID del registro educativo no definido');
