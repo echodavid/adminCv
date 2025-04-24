@@ -2,18 +2,30 @@
   <h2>Manage Languages</h2>
   
   <div class="content">
-  <div id="form">
-    <input type="text" [(ngModel)]="newLanguage.language" placeholder="Enter a language" />
-    <button (click)="addLanguage()">Add Language</button>
-  </div>
+    <div id="form" *ngIf="!editingLanguage">
+      <input type="text" [(ngModel)]="newLanguage.language" placeholder="Enter a language" />
+      <button (click)="addLanguage()">Add Language</button>
+    </div>
 
-  <ul>
-    <li *ngFor="let language of languages">
-      {{ language.language }}
-      <button (click)="deleteLanguage(language.id)">
-        Eliminar {{ language.language }}
-      </button>
-    </li>
-  </ul>
+    <div *ngIf="editingLanguage" id="edit-form">
+      <h3>Edit Language</h3>
+      <input type="text" [(ngModel)]="editingLanguage.language" placeholder="Language Name" />
+      <div id="actions">
+        <button (click)="updateLanguage()">Update</button>
+        <button (click)="cancelEdit()">Cancel</button>
+      </div>
+    </div>
+
+    <ul>
+      <li *ngFor="let language of languages">
+        {{ language.language }}
+        <div id="actions">
+          <button (click)="deleteLanguage(language.id)">Delete</button>
+          <button (click)="editLanguage(language)">Edit</button>
+        </div>
+      </li>
+    </ul>
+
+    
   </div>
 </div>

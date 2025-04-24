@@ -2,21 +2,38 @@
   <h2>Manage Certificates</h2>
   
   <div class="content">
-  <div id="form">
-    <input type="text" [(ngModel)]="newCertificate.name" placeholder="Certificate Name" />
-    <input type="text" [(ngModel)]="newCertificate.institution" placeholder="Institution" />
-    <input type="date" [(ngModel)]="newCertificate.date" placeholder="Date" />
-    <textarea [(ngModel)]="newCertificate.description" placeholder="Description"></textarea>
-    <button (click)="addCertificate()">Add Certificate</button>
-  </div>
+    <div id="form" *ngIf="!editingCertificate">
+      <input type="text" [(ngModel)]="newCertificate.name" placeholder="Certificate Name" />
+      <input type="text" [(ngModel)]="newCertificate.institution" placeholder="Institution" />
+      <input type="date" [(ngModel)]="newCertificate.date" placeholder="Date" />
+      <textarea [(ngModel)]="newCertificate.description" placeholder="Description"></textarea>
+      <button (click)="addCertificate()">Add Certificate</button>
+    </div>
 
-  <ul>
-    <li *ngFor="let certificate of certificatesList">
-      <strong>{{ certificate.name }}</strong> from {{ certificate.institution }} <br>
-      Date: {{ certificate.date }} <br>
-      {{ certificate.description }}
-      <button (click)="deleteCertificate(certificate.id ?? '')">Delete</button>
-    </li>
-  </ul>
+    <div *ngIf="editingCertificate" id="edit-form">
+      <h3>Edit Certificate</h3>
+      <input type="text" [(ngModel)]="editingCertificate.name" placeholder="Certificate Name" />
+      <input type="text" [(ngModel)]="editingCertificate.institution" placeholder="Institution" />
+      <input type="date" [(ngModel)]="editingCertificate.date" placeholder="Date" />
+      <textarea [(ngModel)]="editingCertificate.description" placeholder="Description"></textarea>
+      <div id="actions">
+        <button (click)="updateCertificate()">Update</button>
+        <button (click)="cancelEdit()">Cancel</button>
+      </div>
+    </div>
+
+    <ul>
+      <li *ngFor="let certificate of certificatesList">
+        <strong>{{ certificate.name }}</strong> from {{ certificate.institution }} <br>
+        Date: {{ certificate.date }} <br>
+        {{ certificate.description }}
+        <div id="actions">
+          <button (click)="deleteCertificate(certificate.id ?? '')">Delete</button>
+          <button (click)="editCertificate(certificate)">Edit</button>
+        </div>
+      </li>
+    </ul>
+
+    
   </div>
 </div>

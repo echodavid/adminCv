@@ -12,6 +12,7 @@ export class AdminWorkexperienceComponent implements OnInit {
   itemCount: number = 0;
   workExperience: WorkExperience[] = [];
   newWorkExperience: WorkExperience = new WorkExperience();
+  editingWorkExperience: WorkExperience | null = null; 
 
   constructor(public workExperienceService: WorkExperienceService) {}
 
@@ -36,5 +37,26 @@ export class AdminWorkexperienceComponent implements OnInit {
     }).catch((error: any) => {
       console.error("Error deleting Work Experience: ", error);
     });
+  }
+
+  editWorkExperience(job: WorkExperience) {
+    this.editingWorkExperience = { ...job }; 
+  }
+
+  updateWorkExperience() {
+    if (this.editingWorkExperience?.id) {
+      this.workExperienceService.updateWorkExperience(this.editingWorkExperience.id, this.editingWorkExperience)
+        .then(() => {
+          console.log("Work Experience updated successfully!");
+          this.editingWorkExperience = null; 
+        })
+        .catch((error: any) => {
+          console.error("Error updating Work Experience: ", error);
+        });
+    }
+  }
+
+  cancelEdit() {
+    this.editingWorkExperience = null;
   }
 }

@@ -12,6 +12,7 @@ export class AdminEducationComponent implements OnInit {
   itemCount: number = 0;
   educationList: Education[] = [];
   newEducation: Education = { degree: '', institution: '', startDate: '', endDate: '' };
+  editingEducation: Education | null = null; 
 
   constructor(private educationService: EducationService) {}
 
@@ -23,11 +24,15 @@ export class AdminEducationComponent implements OnInit {
   }
 
   addEducation() {
-    this.educationService.createEducation(this.newEducation).then(() => {
-      this.newEducation = { degree: '', institution: '', startDate: '', endDate: '' };
-    }).catch((error: any) => {
-      console.error('Error adding Education record:', error);
-    });
+    if (this.newEducation.degree?.trim() && this.newEducation.institution?.trim()) {
+      this.educationService.createEducation(this.newEducation).then(() => {
+        this.newEducation = { degree: '', institution: '', startDate: '', endDate: '' };
+      }).catch((error: any) => {
+        console.error('Error adding Education record:', error);
+      });
+    } else {
+      console.error('The degree and institution cannot be empty');
+    }
   }
 
   deleteEducation(id: string) {
@@ -36,5 +41,26 @@ export class AdminEducationComponent implements OnInit {
     }).catch((error: any) => {
       console.error('Error deleting Education record:', error);
     });
+  }
+
+  editEducation(education: Education) {
+    this.editingEducation = { ...education }; 
+  }
+
+  updateEducation() {
+    if (this.editingEducation?.id) {
+      this.educationService.updateEducation(this.editingEducation.id, this.editingEducation)
+        .then(() => {
+          console.log('Education record updated successfully!');
+          this.editingEducation = null;
+        })
+        .catch((error: any) => {
+          console.error('Error updating Education record:', error);
+        });
+    }
+  }
+
+  cancelEdit() {
+    this.editingEducation = null; 
   }
 }

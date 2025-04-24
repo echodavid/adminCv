@@ -11,6 +11,7 @@ import { LanguagesService } from '../services/languages-service/languages.servic
 export class AdminLanguagesComponent implements OnInit {
   languages: Language[] = [];
   newLanguage: Language = { language: '' };
+  editingLanguage: Language | null = null;
 
   constructor(private languagesService: LanguagesService) {}
 
@@ -25,22 +26,43 @@ export class AdminLanguagesComponent implements OnInit {
       this.languagesService.createLanguages(this.newLanguage).then(() => {
         this.newLanguage = { language: '' };
       }).catch((error: any) => {
-        console.error('Error al agregar el idioma:', error);
+        console.error('Error adding language:', error);
       });
     } else {
-      console.error('El idioma no puede estar vacío');
+      console.error('The language cannot be empty');
     }
   }
 
   deleteLanguage(id: string | undefined) {
     if (!id) {
-      console.error('ID del idioma no definido');
+      console.error('Language ID is undefined');
       return;
     }
     this.languagesService.deleteLanguages(id).then(() => {
-      console.log('Idioma eliminado exitosamente');
+      console.log('Language deleted successfully');
     }).catch(error => {
-      console.error('Error al eliminar el idioma:', error);
+      console.error('Error deleting language:', error);
     });
+  }
+
+  editLanguage(language: Language) {
+    this.editingLanguage = { ...language }; 
+  }
+
+  updateLanguage() {
+    if (this.editingLanguage?.id) {
+      this.languagesService.updateLanguages(this.editingLanguage.id, this.editingLanguage)
+        .then(() => {
+          console.log('Language updated successfully');
+          this.editingLanguage = null; 
+        })
+        .catch((error: any) => {
+          console.error('Error updating language:', error);
+        });
+    }
+  }
+
+  cancelEdit() {
+    this.editingLanguage = null; 
   }
 }

@@ -11,6 +11,7 @@ import { SkillsService } from '../services/skills-service/skills.service';
 export class AdminSkillsComponent implements OnInit {
   skills: Skills[] = [];
   newSkill: Skills = { skill: '', level: 0 };
+  editingSkill: Skills | null = null; 
 
   constructor(private skillsService: SkillsService) {}
 
@@ -25,22 +26,43 @@ export class AdminSkillsComponent implements OnInit {
       this.skillsService.createSkills(this.newSkill).then(() => {
         this.newSkill = { skill: '', level: 0 };
       }).catch((error: any) => {
-        console.error('Error al agregar la habilidad:', error);
+        console.error('Error adding skill:', error);
       });
     } else {
-      console.error('La habilidad o el nivel no pueden estar vacíos');
+      console.error('The skill or level cannot be empty');
     }
   }
 
   deleteSkill(id: string | undefined) {
     if (!id) {
-      console.error('ID de la habilidad no definido');
+      console.error('Skill ID is undefined');
       return;
     }
     this.skillsService.deleteSkills(id).then(() => {
-      console.log('Habilidad eliminada exitosamente');
+      console.log('Skill deleted successfully');
     }).catch(error => {
-      console.error('Error al eliminar la habilidad:', error);
+      console.error('Error deleting skill:', error);
     });
+  }
+
+  editSkill(skill: Skills) {
+    this.editingSkill = { ...skill };
+  }
+
+  updateSkill() {
+    if (this.editingSkill?.id) {
+      this.skillsService.updateSkills(this.editingSkill.id, this.editingSkill)
+        .then(() => {
+          console.log('Skill updated successfully');
+          this.editingSkill = null; 
+        })
+        .catch((error: any) => {
+          console.error('Error updating skill:', error);
+        });
+    }
+  }
+
+  cancelEdit() {
+    this.editingSkill = null;
   }
 }

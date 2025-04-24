@@ -1,32 +1,43 @@
 <div class="container">
     <h2>Manage Work Experience</h2>
     <div class="content">
-    <div id="form">
-        <input type="text" placeholder="Company Name"
-            [(ngModel)]="newWorkExperience.company" required> 
-        <input type="text" placeholder="Position"  [(ngModel)]="newWorkExperience.position"
-            required> 
-        <input type="text" placeholder="Location"  [(ngModel)]="newWorkExperience.location"
-            required> 
-        <input type="text" placeholder="Start Date" 
-            [(ngModel)]="newWorkExperience.startDate" required> 
-        <input type="text" placeholder="End Date" [(ngModel)]="newWorkExperience.endDate"
-            required> 
-        <input type="text" placeholder="Accomplishments" 
-            [(ngModel)]="newWorkExperience.accomplishments" required> 
+        <div id="form" *ngIf="!editingWorkExperience">
+            <input type="text" placeholder="Company Name" [(ngModel)]="newWorkExperience.company" required>
+            <input type="text" placeholder="Position" [(ngModel)]="newWorkExperience.position" required>
+            <input type="text" placeholder="Location" [(ngModel)]="newWorkExperience.location" required>
+            <input type="text" placeholder="Start Date" [(ngModel)]="newWorkExperience.startDate" required>
+            <input type="text" placeholder="End Date" [(ngModel)]="newWorkExperience.endDate" required>
+            <input type="text" placeholder="Accomplishments" [(ngModel)]="newWorkExperience.accomplishments" required>
+            <button (click)="addWorkExperience()">Add Work Experience</button>
+        </div>
+        <div *ngIf="editingWorkExperience" id="edit-form">
+            <h3>Edit Work Experience</h3>
+            <input type="text" placeholder="Company Name" [(ngModel)]="editingWorkExperience.company" required>
+            <input type="text" placeholder="Position" [(ngModel)]="editingWorkExperience.position" required>
+            <input type="text" placeholder="Location" [(ngModel)]="editingWorkExperience.location" required>
+            <input type="text" placeholder="Start Date" [(ngModel)]="editingWorkExperience.startDate" required>
+            <input type="text" placeholder="End Date" [(ngModel)]="editingWorkExperience.endDate" required>
+            <input type="text" placeholder="Accomplishments" [(ngModel)]="editingWorkExperience.accomplishments" required>
+            <div id="actions">
+                <button (click)="updateWorkExperience()">Update</button>
+                <button (click)="cancelEdit()">Cancel</button>
+            </div>
+        </div>
 
-        <button (click)="addWorkExperience()">Add Work Experience</button>
+        <ul>
+            <li *ngFor="let job of workExperience">
+                <span class="life-item">{{ job.company }}</span> <br>
+                <span class="life-item">{{ job.position }}</span> <br>
+                <div id="actions">
+                    <button class="btn btn-danger" (click)="job.id ? deleteWorkExperience(job.id) : null" *ngIf="job.id">
+                        Delete
+                    </button>
+                    <button class="btn btn-primary" (click)="editWorkExperience(job)">Edit</button>
+                </div>
+                
+            </li>
+        </ul>
 
+        
     </div>
-    <ul>
-        <li *ngFor="let job of workExperience">
-            <span class="life-item">{{ job.company }}</span> <br>
-            <span class="life-item">{{ job.position }}</span> <br>
-            <button class="btn btn-danger" (click)="job.id ? deleteWorkExperience(job.id): null" *ngIf="job.id">
-                Delete
-            </button>
-
-        </li>
-    </ul>
-</div>
 </div>

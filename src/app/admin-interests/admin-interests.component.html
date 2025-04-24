@@ -1,17 +1,30 @@
 <div class="container">
   <h2>Manage Interests</h2>
   <div class="content">
-    <div id="form">
+    <div id="form" *ngIf="!editingInterest">
       <input type="text" [(ngModel)]="newInterest.interest" placeholder="Enter an interest" />
       <button (click)="addInterest()">Add Interest</button>
+    </div>
+
+    <div *ngIf="editingInterest" id="edit-form">
+      <h3>Edit Interest</h3>
+      <input type="text" [(ngModel)]="editingInterest.interest" placeholder="Interest Name" />
+      <div id="actions">
+        <button (click)="updateInterest()">Update</button>
+        <button (click)="cancelEdit()">Cancel</button>
+      </div>
     </div>
   
     <ul>
       <li *ngFor="let interest of interests">
         {{ interest.interest }}
-        <button (click)="deleteInterest(interest.id)">Delete</button>
+        <div id="actions">
+          <button (click)="deleteInterest(interest.id)">Delete</button>
+          <button (click)="editInterest(interest)">Edit</button>
+        </div>
       </li>
     </ul>
+
+    
   </div>
-  
 </div>

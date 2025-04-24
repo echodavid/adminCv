@@ -1,21 +1,40 @@
 <div class="container">
   <h2>Manage Skills</h2>
   <div class="content">
-  <div id="form">
-    <input type="text" [(ngModel)]="newSkill.skill" placeholder="Enter a skill" />
-    <div class="slider-container">
-      <label for="skill-level">Skill Level: {{ newSkill.level }}</label>
-      <input id="skill-level"   [style.background]="
-      'linear-gradient(to right, #1c76d6 ' + newSkill.level + '%, #ddd ' + newSkill.level + '%)'"type="range" [(ngModel)]="newSkill.level" min="0" max="100" />
+    <div id="form" *ngIf="!editingSkill">
+      <input type="text" [(ngModel)]="newSkill.skill" placeholder="Enter a skill" />
+      <div class="slider-container">
+        <label for="skill-level">Skill Level: {{ newSkill.level }}</label>
+        <input id="skill-level" type="range" [(ngModel)]="newSkill.level" min="0" max="100"
+          [style.background]="'linear-gradient(to right, #1c76d6 ' + newSkill.level + '%, #ddd ' + newSkill.level + '%)'" />
+      </div>
+      <button (click)="addSkill()">Add Skill</button>
     </div>
-    <button (click)="addSkill()">Add Skill</button>
-  </div>
 
-  <ul>
-    <li *ngFor="let skill of skills">
-      {{ skill.skill }} (Level: {{ skill.level }})
-      <button (click)="deleteSkill(skill.id)">Delete</button>
-    </li>
-  </ul>
-</div>
+    <div *ngIf="editingSkill" id="edit-form">
+      <h3>Edit Skill</h3>
+      <input type="text" [(ngModel)]="editingSkill.skill" placeholder="Skill Name" />
+      <div class="slider-container">
+        <label for="edit-skill-level">Skill Level: {{ editingSkill.level }}</label>
+        <input id="edit-skill-level" type="range" [(ngModel)]="editingSkill.level" min="0" max="100"
+          [style.background]="'linear-gradient(to right, #1c76d6 ' + editingSkill.level + '%, #ddd ' + editingSkill.level + '%)'" />
+      </div>
+      <div id="actions">
+        <button (click)="updateSkill()">Update</button>
+        <button (click)="cancelEdit()">Cancel</button>
+      </div>
+    </div>
+
+    <ul>
+      <li *ngFor="let skill of skills">
+        {{ skill.skill }} (Level: {{ skill.level }})
+        <div id="actions">
+          <button (click)="deleteSkill(skill.id)">Delete</button>
+          <button (click)="editSkill(skill)">Edit</button>
+        </div>
+      </li>
+    </ul>
+
+    
+  </div>
 </div>

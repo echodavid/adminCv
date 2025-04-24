@@ -12,6 +12,7 @@ export class AdminCertificatesComponent implements OnInit {
   itemCount: number = 0;
   certificatesList: Certificates[] = [];
   newCertificate: Certificates = { name: '', institution: '', date: '', description: '' };
+  editingCertificate: Certificates | null = null;
 
   constructor(private certificatesService: CertificatesService) {}
 
@@ -43,5 +44,26 @@ export class AdminCertificatesComponent implements OnInit {
     }).catch(error => {
       console.error('Error deleting certificate:', error);
     });
+  }
+
+  editCertificate(certificate: Certificates) {
+    this.editingCertificate = { ...certificate }; 
+  }
+
+  updateCertificate() {
+    if (this.editingCertificate?.id) {
+      this.certificatesService.updateCertificates(this.editingCertificate.id, this.editingCertificate)
+        .then(() => {
+          console.log('Certificate updated successfully');
+          this.editingCertificate = null; 
+        })
+        .catch((error: any) => {
+          console.error('Error updating certificate:', error);
+        });
+    }
+  }
+
+  cancelEdit() {
+    this.editingCertificate = null; 
   }
 }

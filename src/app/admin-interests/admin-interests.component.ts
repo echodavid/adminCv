@@ -11,6 +11,7 @@ import { InterestsService } from '../services/interests-service/interests.servic
 export class AdminInterestsComponent implements OnInit {
   interests: Interest[] = [];
   newInterest: Interest = { interest: '' };
+  editingInterest: Interest | null = null; 
 
   constructor(private interestsService: InterestsService) {}
 
@@ -25,22 +26,43 @@ export class AdminInterestsComponent implements OnInit {
       this.interestsService.createInterests(this.newInterest).then(() => {
         this.newInterest = { interest: '' };
       }).catch((error: any) => {
-        console.error('Error al agregar el interés:', error);
+        console.error('Error adding interest:', error);
       });
     } else {
-      console.error('El interés no puede estar vacío');
+      console.error('The interest cannot be empty');
     }
   }
 
   deleteInterest(id: string | undefined) {
     if (!id) {
-      console.error('ID del interés no definido');
+      console.error('Interest ID is undefined');
       return;
     }
     this.interestsService.deleteInterests(id).then(() => {
-      console.log('Interés eliminado exitosamente');
+      console.log('Interest deleted successfully');
     }).catch(error => {
-      console.error('Error al eliminar el interés:', error);
+      console.error('Error deleting interest:', error);
     });
+  }
+
+  editInterest(interest: Interest) {
+    this.editingInterest = { ...interest };
+  }
+
+  updateInterest() {
+    if (this.editingInterest?.id) {
+      this.interestsService.updateInterests(this.editingInterest.id, this.editingInterest)
+        .then(() => {
+          console.log('Interest updated successfully');
+          this.editingInterest = null; 
+        })
+        .catch((error: any) => {
+          console.error('Error updating interest:', error);
+        });
+    }
+  }
+
+  cancelEdit() {
+    this.editingInterest = null;
   }
 }
