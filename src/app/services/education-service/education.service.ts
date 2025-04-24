@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -8,9 +8,9 @@ import {
   deleteDoc,
   doc,
   getFirestore,
-} from "@angular/fire/firestore";
-import { BehaviorSubject, Observable } from "rxjs";
-import { Education } from "../../models/education/education.model";
+} from '@angular/fire/firestore';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Education } from '../../models/education/education.model';
 
 @Injectable({
   providedIn: 'root',
@@ -24,11 +24,11 @@ export class EducationService {
     this.listenToEducation();
   }
 
-  private listenToEducation(): void {
+   private listenToEducation(): void {
     const collectionRef = collection(this.firestore, this.dbPath);
     onSnapshot(collectionRef, (snapshot) => {
       const educationList = snapshot.docs.map(doc => ({
-        id: doc.id,
+        id: doc.id, 
         ...doc.data()
       } as Education));
       this.educationSubject.next(educationList);

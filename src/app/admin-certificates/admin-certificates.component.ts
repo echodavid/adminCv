@@ -33,11 +33,8 @@ export class AdminCertificatesComponent implements OnInit {
     }
   }
 
-  deleteCertificate(id: string | undefined) {
-    if (!id) {
-      console.error('ID del certificado no definido');
-      return;
-    }
+  deleteCertificate(id: string) {
+ 
     this.certificatesService.deleteCertificates(id).then(() => {
       console.log('Certificado eliminado exitosamente');
     }).catch(error => {

@@ -14,7 +14,7 @@
     <li *ngFor="let education of educationList">
       <strong>{{ education.degree }}</strong> at {{ education.institution }} <br>
       From {{ education.startDate }} to {{ education.endDate }}
-      <button (click)="deleteEducation(education.id)">Delete</button>
+            <button (click)="deleteEducation(education.id)">Delete</button>
     </li>
   </ul>
   </div>

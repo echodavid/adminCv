@@ -9,6 +9,7 @@ import { EducationService } from '../services/education-service/education.servic
   styleUrls: ['./admin-education.component.css']
 })
 export class AdminEducationComponent implements OnInit {
+  itemCount: number = 0;
   educationList: Education[] = [];
   newEducation: Education = { degree: '', institution: '', startDate: '', endDate: '' };
 
@@ -17,30 +18,23 @@ export class AdminEducationComponent implements OnInit {
   ngOnInit(): void {
     this.educationService.getEducation().subscribe(data => {
       this.educationList = data;
+      this.itemCount = this.educationList.length;
     });
   }
 
   addEducation() {
-    if (this.newEducation.degree?.trim() && this.newEducation.institution?.trim()) {
-      this.educationService.createEducation(this.newEducation).then(() => {
-        this.newEducation = { degree: '', institution: '', startDate: '', endDate: '' };
-      }).catch((error: any) => {
-        console.error('Error al agregar el registro educativo:', error);
-      });
-    } else {
-      console.error('El título y la institución no pueden estar vacíos');
-    }
+    this.educationService.createEducation(this.newEducation).then(() => {
+      this.newEducation = { degree: '', institution: '', startDate: '', endDate: '' };
+    }).catch((error: any) => {
+      console.error('Error adding Education record:', error);
+    });
   }
 
-  deleteEducation(id: string | undefined) {
-    if (!id) {
-      console.error('ID del registro educativo no definido');
-      return;
-    }
+  deleteEducation(id: string) {
     this.educationService.deleteEducation(id).then(() => {
-      console.log('Registro educativo eliminado exitosamente');
-    }).catch(error => {
-      console.error('Error al eliminar el registro educativo:', error);
+      console.log('Education record deleted successfully!');
+    }).catch((error: any) => {
+      console.error('Error deleting Education record:', error);
     });
   }
 }
