@@ -1,8 +1,8 @@
 <div class="container">
   <h2>Manage Certificates</h2>
   
-  <!-- Formulario para agregar certificados -->
-  <div>
+  <div class="content">
+  <div id="form">
     <input type="text" [(ngModel)]="newCertificate.name" placeholder="Certificate Name" />
     <input type="text" [(ngModel)]="newCertificate.institution" placeholder="Institution" />
     <input type="date" [(ngModel)]="newCertificate.date" placeholder="Date" />
@@ -10,7 +10,6 @@
     <button (click)="addCertificate()">Add Certificate</button>
   </div>
 
-  <!-- Lista de certificados -->
   <ul>
     <li *ngFor="let certificate of certificatesList">
       <strong>{{ certificate.name }}</strong> from {{ certificate.institution }} <br>
@@ -19,4 +18,5 @@
       <button (click)="deleteCertificate(certificate.id)">Delete</button>
     </li>
   </ul>
+  </div>
 </div>

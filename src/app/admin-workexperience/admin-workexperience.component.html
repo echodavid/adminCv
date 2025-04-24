@@ -1,33 +1,32 @@
-<div class="container color-dark">
-    <div class="col">
-        <p>work-experiece items</p>
-    </div>
-</div>
-<div class="container color-ligth">
-    <div class="col">
-        <form action>
-            <input type="text" class="txt" placeholder="Company Name" name="companyName" [(ngModel)]="newWorkExperience.company" required> <br>
-            <input type="text" class="txt" placeholder="Position" name="position" [(ngModel)]="newWorkExperience.position" required> <br>
-            <input type="text" class="txt" placeholder="Location" name="location" [(ngModel)]="newWorkExperience.location" required> <br>
-            <input type="text" class="txt" placeholder="Start Date" name="startDate" [(ngModel)]="newWorkExperience.startDate" required> <br>
-            <input type="text" class="txt" placeholder="End Date" name="endDate" [(ngModel)]="newWorkExperience.endDate" required> <br>
-            <input type="text" class="txt" placeholder="Accomplishments" name="accomplishments" [(ngModel)]="newWorkExperience.accomplishments" required> <br>
+<div class="container">
+    <h2>Manage Work Experience</h2>
+    <div class="content">
+    <div id="form">
+        <input type="text" placeholder="Company Name"
+            [(ngModel)]="newWorkExperience.company" required> 
+        <input type="text" placeholder="Position"  [(ngModel)]="newWorkExperience.position"
+            required> 
+        <input type="text" placeholder="Location"  [(ngModel)]="newWorkExperience.location"
+            required> 
+        <input type="text" placeholder="Start Date" 
+            [(ngModel)]="newWorkExperience.startDate" required> 
+        <input type="text" placeholder="End Date" [(ngModel)]="newWorkExperience.endDate"
+            required> 
+        <input type="text" placeholder="Accomplishments" 
+            [(ngModel)]="newWorkExperience.accomplishments" required> 
 
-            
-        </form>
-        <button class="btn btn-primary" (click)="addWorkExperience()">Add Work Experience</button>
-    </div>
-    <div class="col">
-        {{ workExperience.length }} Work Experience Items
-        <p class="life-container" *ngFor="let job of workExperience">
+        <button (click)="addWorkExperience()">Add Work Experience</button>
 
+    </div>
+    <ul>
+        <li *ngFor="let job of workExperience">
             <span class="life-item">{{ job.company }}</span> <br>
             <span class="life-item">{{ job.position }}</span> <br>
-            <button class="btn btn-danger" 
-                (click)="job.id ? deleteWorkExperience(job.id): null"
-                *ngIf="job.id">
+            <button class="btn btn-danger" (click)="job.id ? deleteWorkExperience(job.id): null" *ngIf="job.id">
                 Delete
-            </button>        
-        </p>
-    </div>
+            </button>
+
+        </li>
+    </ul>
+</div>
 </div>

@@ -1,13 +1,12 @@
 <div class="container">
   <h2>Manage Languages</h2>
   
-  <!-- Formulario para agregar idiomas -->
-  <div>
+  <div class="content">
+  <div id="form">
     <input type="text" [(ngModel)]="newLanguage.language" placeholder="Enter a language" />
     <button (click)="addLanguage()">Add Language</button>
   </div>
 
-  <!-- Lista de idiomas -->
   <ul>
     <li *ngFor="let language of languages">
       {{ language.language }}
@@ -16,4 +15,5 @@
       </button>
     </li>
   </ul>
+  </div>
 </div>
