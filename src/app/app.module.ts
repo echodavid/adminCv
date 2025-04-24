@@ -18,6 +18,12 @@ import { environment } from '../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { LanguagesService } from './services/languages-service/languages.service';
 import { Firestore } from '@angular/fire/firestore';
+import { CertificatesService } from './services/certificates-service/certificates.service';
+import { InterestsService } from './services/interests-service/interests.service';
+import { WorkExperienceService } from './services/work-experience-service/work-experience.service';
+import { HeaderService } from './services/header-service/header.service';
+import { EducationService } from './services/education-service/education.service';
+import { SkillsService } from './services/skills-service/skills.service';
 
 @NgModule({
   declarations: [
@@ -39,6 +45,13 @@ import { Firestore } from '@angular/fire/firestore';
   ],
   providers: [
     LanguagesService,
+    CertificatesService,
+    InterestsService,
+    WorkExperienceService,
+    HeaderService,
+    EducationService,
+    SkillsService,
+    
 
 
   ],
