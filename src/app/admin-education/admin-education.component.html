@@ -2,20 +2,20 @@
   <h2>Manage Education</h2>
   
   <div class="content">
-  <div id="form">
-    <input type="text" [(ngModel)]="newEducation.degree" placeholder="Degree" />
-    <input type="text" [(ngModel)]="newEducation.institution" placeholder="Institution" />
-    <input type="date" [(ngModel)]="newEducation.startDate" placeholder="Start Date" />
-    <input type="date" [(ngModel)]="newEducation.endDate" placeholder="End Date" />
-    <button (click)="addEducation()">Add Education</button>
-  </div>
+    <div id="form">
+      <input type="text" [(ngModel)]="newEducation.degree" placeholder="Degree" />
+      <input type="text" [(ngModel)]="newEducation.institution" placeholder="Institution" />
+      <input type="date" [(ngModel)]="newEducation.startDate" placeholder="Start Date" />
+      <input type="date" [(ngModel)]="newEducation.endDate" placeholder="End Date" />
+      <button (click)="addEducation()">Add Education</button>
+    </div>
 
-  <ul>
-    <li *ngFor="let education of educationList">
-      <strong>{{ education.degree }}</strong> at {{ education.institution }} <br>
-      From {{ education.startDate }} to {{ education.endDate }}
-            <button (click)="deleteEducation(education.id)">Delete</button>
-    </li>
-  </ul>
+    <ul>
+      <li *ngFor="let education of educationList">
+        <strong>{{ education.degree }}</strong> at {{ education.institution }} <br>
+        From {{ education.startDate }} to {{ education.endDate }}
+        <button (click)="deleteEducation(education.id ?? '' )">Delete</button>
+      </li>
+    </ul>
   </div>
 </div>

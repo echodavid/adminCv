@@ -15,7 +15,7 @@
       <strong>{{ certificate.name }}</strong> from {{ certificate.institution }} <br>
       Date: {{ certificate.date }} <br>
       {{ certificate.description }}
-      <button (click)="deleteCertificate(certificate.id)">Delete</button>
+      <button (click)="deleteCertificate(certificate.id ?? '')">Delete</button>
     </li>
   </ul>
   </div>
